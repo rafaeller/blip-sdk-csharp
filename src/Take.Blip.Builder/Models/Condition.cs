@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Take.Blip.Builder.Utils;
 
 namespace Take.Blip.Builder.Models
 {
@@ -40,7 +41,7 @@ namespace Take.Blip.Builder.Models
         /// The values to be used by the comparison with the context value.
         /// </summary>
         public string[] Values { get; set; }
-               
+
         public void Validate()
         {
             this.ValidateObject();
@@ -69,9 +70,17 @@ namespace Take.Blip.Builder.Models
         public async Task<bool> EvaluateConditionAsync(
             LazyInput lazyInput,
             IContext context,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            IVariableReplacer variableReplacer = default)
         {
             string comparisonValue;
+
+            if (!(variableReplacer is null))
+            {
+                var replaceTasks = Values.ToList().Select(item => variableReplacer.ReplaceAsync(item, context, cancellationToken));
+                var replacedVariables = await Task.WhenAll(replaceTasks);
+                Values = replacedVariables;
+            }
 
             switch (Source)
             {

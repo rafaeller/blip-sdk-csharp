@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Take.Blip.Builder.Utils;
 
 namespace Take.Blip.Builder.Models
 {
@@ -12,11 +13,12 @@ namespace Take.Blip.Builder.Models
            this IEnumerable<Condition> conditions,
            LazyInput lazyInput,
            IContext context,
-           CancellationToken cancellationToken)
+           CancellationToken cancellationToken,
+           IVariableReplacer variableReplacer = default)
         {
             foreach (var outputCondition in conditions)
             {
-                if (!await outputCondition.EvaluateConditionAsync(lazyInput, context, cancellationToken))
+                if (!await outputCondition.EvaluateConditionAsync(lazyInput, context, cancellationToken, variableReplacer))
                 {
                     return false;
                 }

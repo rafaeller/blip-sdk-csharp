@@ -357,7 +357,7 @@ namespace Take.Blip.Builder
             foreach (var stateAction in actions.OrderBy(a => a.Order))
             {
                 if (stateAction.Conditions != null &&
-                    !await stateAction.Conditions.EvaluateConditionsAsync(lazyInput, context, cancellationToken))
+                    !await stateAction.Conditions.EvaluateConditionsAsync(lazyInput, context, cancellationToken, _variableReplacer))
                 {
                     continue;
                 }
@@ -468,7 +468,7 @@ namespace Take.Blip.Builder
                     try
                     {
                         if (output.Conditions == null ||
-                            await output.Conditions.EvaluateConditionsAsync(lazyInput, context, cancellationToken))
+                            await output.Conditions.EvaluateConditionsAsync(lazyInput, context, cancellationToken, _variableReplacer))
                         {
                             var replacedVariable = output.StateId;
                             
